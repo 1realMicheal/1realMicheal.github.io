@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Micheal Boadi — Computer Vision & Machine Learning Research</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root{
+    --paper:#F7F7F4;
+    --paper-raised:#FFFFFF;
+    --ink:#14181C;
+    --ink-soft:#4A5158;
+    --muted:#8A9096;
+    --teal:#2E6F6B;
+    --teal-soft:#E4EFEE;
+    --indigo:#48519B;
+    --line:#DEDDD6;
+    --radius:2px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    margin:0;
+    color:var(--ink);
+  }
+  .mono{
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:0.02em;
+  }
+  a{color:var(--indigo); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  :focus-visible{
+    outline:2px solid var(--teal);
+    outline-offset:3px;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+
+  .wrap{
+    max-width:880px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:10;
+    background:rgba(247,247,244,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{
+    display:flex; justify-content:space-between; align-items:center;
+    height:56px;
+  }
+  .nav-name{font-family:'Fraunces', serif; font-weight:600; font-size:16px;}
+  .nav-links{display:flex; gap:22px; list-style:none; margin:0; padding:0;}
+  .nav-links a{
+    color:var(--ink-soft); font-size:13px; font-family:'JetBrains Mono', monospace;
+  }
+  .nav-links a:hover{color:var(--teal); text-decoration:none;}
+  @media (max-width:640px){
+    .nav-links{display:none;}
+  }
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    padding:96px 0 72px;
+    position:relative;
+  }
+  .bbox{
+    position:relative;
+    display:inline-block;
+    padding:28px 32px;
+  }
+  .bbox::before, .bbox::after,
+  .bbox .c2::before, .bbox .c2::after{
+    content:"";
+    position:absolute;
+    width:22px; height:22px;
+    border:2px solid var(--teal);
+  }
+  .bbox::before{ top:0; left:0; border-right:none; border-bottom:none; }
+  .bbox::after{ top:0; right:0; border-left:none; border-bottom:none; }
+  .bbox .c2::before{ bottom:0; left:0; border-right:none; border-top:none; }
+  .bbox .c2::after{ bottom:0; right:0; border-left:none; border-top:none; }
+
+  .tag{
+    position:absolute;
+    top:-11px; left:24px;
+    background:var(--teal);
+    color:#fff;
+    font-size:11px;
+    padding:2px 8px;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .hero h1{
+    font-size:clamp(34px, 6vw, 52px);
+    line-height:1.05;
+  }
+  .hero .role{
+    margin-top:10px;
+    color:var(--ink-soft);
+    font-size:17px;
+    max-width:520px;
+  }
+  .hero-meta{
+    margin-top:28px;
+    display:flex; flex-wrap:wrap; gap:18px;
+    font-size:13px;
+    color:var(--muted);
+  }
+  .hero-meta a{color:var(--ink-soft);}
+  .hero-meta a:hover{color:var(--teal);}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:56px 0; border-top:1px solid var(--line);}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--teal);
+    text-transform:lowercase;
+    margin-bottom:8px;
+    display:block;
+  }
+  section h2{font-size:26px; margin-bottom:20px;}
+
+  p{color:var(--ink-soft); margin:0 0 14px;}
+
+  /* chips */
+  .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;}
+  .chip{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    background:var(--teal-soft);
+    color:var(--teal);
+    padding:5px 10px;
+    border-radius:var(--radius);
+  }
+
+  /* timeline / entries */
+  .entry{
+    display:grid;
+    grid-template-columns:130px 1fr;
+    gap:18px;
+    padding:18px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .entry:last-child{border-bottom:none;}
+  .entry-date{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--muted);
+    padding-top:2px;
+  }
+  .entry-title{font-weight:600; font-size:15.5px; color:var(--ink); margin-bottom:2px;}
+  .entry-org{font-size:13.5px; color:var(--teal); margin-bottom:8px;}
+  .entry ul{margin:0; padding-left:18px; color:var(--ink-soft); font-size:14.5px;}
+  .entry li{margin-bottom:4px;}
+  @media (max-width:640px){
+    .entry{grid-template-columns:1fr; gap:4px;}
+  }
+
+  /* project cards */
+  .card{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    padding:20px 22px;
+    margin-bottom:16px;
+    border-radius:var(--radius);
+  }
+  .card h3{font-size:16.5px; margin-bottom:8px;}
+  .card p{font-size:14.5px; margin-bottom:10px;}
+
+  /* publications */
+  .pub{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    gap:16px;
+    padding:14px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .pub:last-child{border-bottom:none;}
+  .pub-title{font-size:14.5px; color:var(--ink); font-weight:500;}
+  .pub-venue{font-size:13px; color:var(--muted); margin-top:3px;}
+  .status{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    padding:3px 8px;
+    white-space:nowrap;
+    border-radius:var(--radius);
+  }
+  .status.accepted{background:#E4F1E5; color:#2E6F3E;}
+  .status.submitted{background:#EDEBF7; color:var(--indigo);}
+  .status.progress{background:var(--teal-soft); color:var(--teal);}
+
+  /* two column grid */
+  .grid2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:32px;
+  }
+  @media (max-width:640px){ .grid2{grid-template-columns:1fr;} }
+  .grid2 h3{font-size:14px; font-family:'JetBrains Mono', monospace; color:var(--ink-soft); font-weight:500; margin-bottom:10px;}
+  .grid2 ul{margin:0; padding-left:18px; color:var(--ink-soft); font-size:14px;}
+  .grid2 li{margin-bottom:6px;}
+
+  /* footer / contact */
+  footer{
+    padding:56px 0 80px;
+    text-align:center;
+  }
+  footer .bbox{margin-bottom:18px;}
+  footer p{color:var(--muted); font-size:13.5px;}
+  .contact-links{
+    display:flex; justify-content:center; gap:24px;
+    margin-top:14px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13.5px;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <span class="nav-name">Micheal Boadi</span>
+    <ul class="nav-links">
+      <li><a href="#about">about</a></li>
+      <li><a href="#research">research</a></li>
+      <li><a href="#experience">experience</a></li>
+      <li><a href="#projects">projects</a></li>
+      <li><a href="#publications">publications</a></li>
+      <li><a href="#contact">contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="bbox">
+      <span class="tag">person: 0.99</span>
+      <h1>Micheal Boadi</h1>
+      <p class="role">Researcher working on computer vision, medical imaging, and low‑resource NLP — applying to PhD programs for Fall 2027.</p>
+      <div class="c2"></div>
+    </div>
+    <div class="hero-meta">
+      <a href="mailto:mboadi225@gmail.com">mboadi225@gmail.com</a>
+      <a href="tel:+233551376761">+233 551 376 761</a>
+      <a href="https://linkedin.com/in/micheal-boadi" target="_blank" rel="noopener">linkedin.com/in/micheal-boadi</a>
+    </div>
+  </div>
+</header>
+
+<section id="about">
+  <div class="wrap">
+    <span class="eyebrow">// about</span>
+    <h2>Background</h2>
+    <p>I'm a Computer Engineering graduate from Kwame Nkrumah University of Science and Technology (KNUST), Ghana, graduating with First Class Honors. My work sits at the intersection of computer vision, deep learning, and building AI systems that hold up under real-world constraints — from segmenting skin lesions in medical images to transcribing local-language court proceedings. I'm currently a research assistant at the Responsible AI Lab (KNUST), a remote research intern at North Dakota State University's Sustainable Mobility and Advanced Research in Transportation Lab, and a teaching assistant for Robotics & Computer Vision.</p>
+    <p>I'm applying to PhD programs for Fall 2027, with interests spanning medical imaging, vision-language models, and efficient, human-centered intelligent systems.</p>
+  </div>
+</section>
+
+<section id="research">
+  <div class="wrap">
+    <span class="eyebrow">// research interests</span>
+    <h2>What I work on</h2>
+    <div class="chips">
+      <span class="chip">machine learning & deep learning</span>
+      <span class="chip">computer vision & embodied AI</span>
+      <span class="chip">natural language processing</span>
+      <span class="chip">AI in medical imaging</span>
+      <span class="chip">efficient, human-centered ML systems</span>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <span class="eyebrow">// research & teaching experience</span>
+    <h2>Experience</h2>
+
+    <div class="entry">
+      <div class="entry-date mono">Oct 2025 – Present</div>
+      <div>
+        <div class="entry-title">Research Assistant</div>
+        <div class="entry-org">Responsible AI Lab, KNUST</div>
+        <ul>
+          <li>Investigating CNN–Vision Transformer (ViT) hybrid architectures for medical image segmentation</li>
+          <li>Researching low-resource NLP systems for automatic transcription and translation of local court proceedings between Ghanaian languages and English</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-date mono">Apr 2026 – Present</div>
+      <div>
+        <div class="entry-title">Research Intern (Remote)</div>
+        <div class="entry-org">Sustainable Mobility & Advanced Research in Transportation Lab, North Dakota State University</div>
+        <ul>
+          <li>Investigating vision-language models for traffic safety applications</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-date mono">Apr 2026 – Present</div>
+      <div>
+        <div class="entry-title">Teaching Assistant / Lab Instructor — COE 458: Robotics & Computer Vision</div>
+        <div class="entry-org">Dept. of Computer Engineering, KNUST</div>
+        <ul>
+          <li>Facilitated lab and class sessions on robotics kinematics, sensor integration, and computer vision algorithms</li>
+          <li>Held office hours and provided academic mentorship to 26 students</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-date mono">Jan – Sept 2025</div>
+      <div>
+        <div class="entry-title">Undergraduate Capstone Research Project</div>
+        <div class="entry-org">KNUST</div>
+        <ul>
+          <li>Designed a CNN (TensorFlow, Keras, OpenCV) to detect PCB defects — missing holes, open/short circuits, spurs</li>
+          <li>Achieved 91.0% overall precision and 88.3% recall, with 94%+ class-level precision on critical defects</li>
+          <li>Presented as a research poster at KNUST Technology Week 2025</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="entry-date mono">Nov – Dec 2024</div>
+      <div>
+        <div class="entry-title">IT Intern</div>
+        <div class="entry-org">Electricity Company of Ghana — Eastern Regional HQ</div>
+        <ul>
+          <li>Provided technical support across departments; maintained network infrastructure and servers</li>
+          <li>Digitized client service records to improve operational efficiency</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <span class="eyebrow">// projects</span>
+    <h2>Selected projects</h2>
+
+    <div class="card">
+      <h3>Trash Sorting Image Classification Model</h3>
+      <p>Multi-class waste-sorting image classifier built with MobileNetV2 transfer learning. Ran controlled experiments on how fine-tuning, regularization, and data imbalance affect generalization, iterating based on learning-curve behavior and diagnostic metrics.</p>
+      <div class="chips"><span class="chip">computer vision</span><span class="chip">transfer learning</span></div>
+    </div>
+
+    <div class="card">
+      <h3>Seq2Point NILM Energy Disaggregation</h3>
+      <p>CNN-based Seq2Point model for appliance-level energy disaggregation from aggregate mains data (UK-DALE dataset). Built reproducible preprocessing, windowing, and training pipelines; evaluated with MAE, RMSE, and disaggregation plots.</p>
+      <div class="chips"><span class="chip">time series</span><span class="chip">CNN</span><span class="chip">energy</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="publications">
+  <div class="wrap">
+    <span class="eyebrow">// publications</span>
+    <h2>Papers in progress</h2>
+
+    <div class="pub">
+      <div>
+        <div class="pub-title">DPASNet: Dual-Path Adaptive Segmentation Network for skin lesion analysis</div>
+        <div class="pub-venue">4th Workshop on Data Engineering in Medical Imaging (DEMI), MICCAI 2026</div>
+      </div>
+      <span class="status submitted mono">submitting</span>
+    </div>
+
+    <div class="pub">
+      <div>
+        <div class="pub-title">From Local Features to Global Context: A Systematic Review of CNN–Vision Transformer Hybrids for Skin Lesion Analysis</div>
+        <div class="pub-venue">MDPI Diagnostics Journal</div>
+      </div>
+      <span class="status submitted mono">submitting</span>
+    </div>
+
+    <div class="pub">
+      <div>
+        <div class="pub-title">Explain, Explain, Explain: Uncertainty–Explanation Alignment for EEG Models Under Artifact and Explainer Perturbations</div>
+        <div class="pub-venue">AISB 2026 XTAI Symposium</div>
+      </div>
+      <span class="status accepted mono">accepted</span>
+    </div>
+  </div>
+</section>
+
+<section id="more">
+  <div class="wrap">
+    <span class="eyebrow">// education, leadership & skills</span>
+    <div class="grid2">
+      <div>
+        <h3>education</h3>
+        <ul>
+          <li><strong>BSc Computer Engineering</strong>, KNUST — First Class Honors (Jan 2022–Sept 2025)</li>
+          <li>Coursework: Computer Vision & Robotics, Statistics & Probability, Multivariable Calculus, Numerical Analysis, Linear Algebra, Software Engineering, Data Structures & Algorithms</li>
+        </ul>
+
+        <h3 style="margin-top:24px;">leadership & service</h3>
+        <ul>
+          <li>Research Coordinator, IEEE Computer Society – KNUST Chapter (Mar 2025–Present)</li>
+          <li>Deputy Judicial Committee Chairperson, ACES – KNUST (Jun 2024–Feb 2025)</li>
+          <li>STEM Outreach Volunteer, IEEE Computer Society – KNUST Chapter</li>
+          <li>Peer Counselor & Mentor, KNUST</li>
+          <li>STEM Education Volunteer, Young At Heart Foundation, Ghana</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>skills</h3>
+        <ul>
+          <li><strong>Languages:</strong> Python, C/C++, MATLAB</li>
+          <li><strong>ML frameworks:</strong> TensorFlow, PyTorch, Scikit-learn, Keras, Hugging Face Transformers, OpenCV</li>
+          <li><strong>Data tools:</strong> Pandas, NumPy, Matplotlib, Seaborn, SQL</li>
+          <li><strong>Research skills:</strong> Experimental design, model evaluation, literature review, technical writing</li>
+        </ul>
+
+        <h3 style="margin-top:24px;">memberships</h3>
+        <ul>
+          <li>IEEE TC on Pattern Analysis and Machine Intelligence</li>
+          <li>IEEE Technical Council on Software Engineering</li>
+          <li>IEEE Computer Society</li>
+          <li>Institute of Electrical and Electronics Engineers (IEEE)</li>
+          <li>National Society of Black Engineers (NSBE), KNUST</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <span class="eyebrow">// contact</span>
+    <div class="bbox">
+      <span class="tag">reach: open</span>
+      <h2>Let's talk research</h2>
+      <div class="c2"></div>
+    </div>
+    <p>Open to conversations about PhD programs, collaborations, or anything CV/ML.</p>
+    <div class="contact-links">
+      <a href="mailto:mboadi225@gmail.com">email</a>
+      <a href="tel:+233551376761">phone</a>
+      <a href="https://linkedin.com/in/micheal-boadi" target="_blank" rel="noopener">linkedin</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
